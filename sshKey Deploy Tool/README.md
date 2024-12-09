@@ -10,8 +10,8 @@
 
 ## Informacion sobre copias de seguridad
 
-Este script realiza una copia de seguridad del archivo anterior en caso de que algo falle, podamos restaurarlo simplemente eliminado el archivo malo y renombrando el de la copia.
-Los archivo que se realizan copia son:
+Este script realiza una copia de seguridad del archivo anterior para que, en caso de que algo falle, podamos restaurarlo simplemente eliminado el archivo malo y renombrando el de la copia.
+Los archivos que se realizan copia son:
 
 - authorized_keys (dentro de /home/usuario/.ssh/) y quedaria como authorized_keys-fechaActual.bak
 - sshd_config (dentro de /etc/ssh/) y quedaria como sshd_config-fechaActual.bak
