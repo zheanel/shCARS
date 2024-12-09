@@ -1,6 +1,6 @@
 # Herramienta para provisionamiento rapido de claves publicas SSH
 
-## Ejeccucion del script
+## Ejecuccion del script
 
 1. Debemos de estar en el usuario que aparece nada mas arrancar el servidor (no root)
 2. Ejecutamos el siguiente comando: wget http://172.16.0.10/pubfiles/sshkey-deploy.sh && chmod +x sshkey-deploy.sh && ./sshkey-deploy.sh
