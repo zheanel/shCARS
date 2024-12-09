@@ -26,8 +26,8 @@ else
     sudo service sshd restart
     if [ $? -ne 0 ]
     then
-        echo "Error al descargar/aplicar cambios requeridos. Realize los pasos manualmente"
+        echo "Error al descargar ficheros o aplicar cambios requeridos. Realize los pasos manualmente"
     else
-        echo "Proceso Finalizado"
+        echo "Proceso Finalizado. Yipeee"
     fi
 fi
