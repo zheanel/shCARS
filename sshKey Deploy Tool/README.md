@@ -3,7 +3,7 @@
 ## Ejecuccion del script
 
 1. Debemos de estar en el usuario que aparece nada mas arrancar el servidor (no root)
-2. Ejecutamos el siguiente comando: wget http://172.16.0.10/pubfiles/sshkey-deploy.sh && chmod +x sshkey-deploy.sh && ./sshkey-deploy.sh
+2. Ejecutamos el siguiente comando: wget http://172.16.0.5/pubfiles/sshkey-deploy.sh && chmod +x sshkey-deploy.sh && ./sshkey-deploy.sh
 3. Seguimos los pasos que sale en la terminal, nos pedira nuestra contraseña de usuario para ejecutar ciertos comandos como root
 4. Si todo ha salido bien, ya tendremos las claves instaladas de forma masiva
 
