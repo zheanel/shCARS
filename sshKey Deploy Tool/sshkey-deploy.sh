@@ -3,7 +3,7 @@
 #Herramienta para la instalacion masiva de claves publicas en servidores Linux
 # Github: @zheanel | v 0.1
 
-originSERVER=172.16.0.10
+originSERVER=172.16.0.5
 keyFILE=authorized_keys
 
 if [ $(id -u) -eq 0 ]
