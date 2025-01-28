@@ -20,10 +20,10 @@ doBackup() {
                 read -p "Se ha subido el archivo con exito, presione enter para continuar"
             fi
         else
-            echo ""
+            read -p "Operacion cancelada, presione enter para volver"
         fi
     else
-        echo ""
+        read -p "Ha ocurrido un error al generar el archivo, se debe realizar la copia manualmente"
     fi
     clear
 }
@@ -33,7 +33,10 @@ listBackups() {
 }
 
 delBackup() {
-        echo ""
+        read -p "Introduce el nombre del archivo completo obtenido a traves de Listar copias de seguridad: " deleteThisBackup
+        if [ "$deleteThisBackup" != "" ]; then
+            
+        fi
 }
 
 clear
