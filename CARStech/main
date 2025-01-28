@@ -1,0 +1,44 @@
+#!/bin/bash
+echo "
+  ____    _    ____  ____  _            _    
+ / ___|  / \  |  _ \/ ___|| |_ ___  ___| |__ 
+| |     / _ \ | |_) \___ \| __/ _ \/ __| '_ \ 
+| |___ / ___ \|  _ < ___) | ||  __/ (__| | | |
+ \____/_/   \_\_| \_\____/ \__\___|\___|_| |_|
+
+Build v1.0 - Enero 2025
+"
+
+clear
+menu() {
+    echo "MENU PRINCIPAL"
+    echo "Selecciona una opcion:"
+    echo "1) Gestionar Servicios"
+    echo "2) Copias de Seguridad"
+    echo "3) Mantenimiento Sistema"
+    echo "4) Comprobar conectividad"
+    echo "5) Salir"
+    read -p "Introduce el número de tu opción: " option
+
+    case $option in
+        1) selected="Gestionar Servicios";;
+        2) selected="Copias de Seguridad";;
+        3) selected="Mantenimiento Sistema";;
+        4) selected="Comprobar conectividad";;
+        5) selected="Salir";;
+        *) echo "Opción no válida"; selected="";;
+    esac
+}
+
+menu
+
+while [ "$selected" != "Salir" ]
+do
+    case $selected in
+        "Gestionar Servicios") bin/services;;
+        "Copias de Seguridad") bin/backups;;
+        "Mantenimiento Sistema") bin/os_maintenance;;
+        "Comprobar conectividad") bin/net_health;;
+    esac
+    menu
+done

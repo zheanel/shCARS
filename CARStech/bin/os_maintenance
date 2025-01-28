@@ -1,0 +1,90 @@
+#!/bin/bash
+
+updRepo() {
+    echo "Se estan actualizando los repositorios..."
+    sudo apt-get update -y >/dev/null
+    if [ $? -eq 0 ]; then
+        read -p "Se han actualizado los repositorios correctamente, presione enter para volver"
+    else
+        echo "Se ha producido algun error, revise la consola"
+        read -p "Presione enter para volver"
+    fi
+    clear
+}
+
+updPaq() {
+    echo "Se estan actualizando los paquetes del sistema..."
+    sudo apt-get upgrade -y >/dev/null
+    if [ $? -eq 0 ]; then
+        read -p "Se han actualizado los paquetes correctamente, presione enter para volver"
+    else
+        echo "Se ha producido algun error, revise la consola"
+        read -p "Presione enter para volver"
+    fi
+    clear
+}
+
+delUnsPaq() {
+    read -p "Se va a proceder a eliminar automaticamente paquetes que no estan en uso. ¿Desea continuar? Y/N: " confirm
+    if [ "$confirm" = "Y" ]; then
+        sudo apt-get upgrade -y >/dev/null
+        if [ $? -eq 0 ]; then
+            read -p "Se han eliminado los paquetes sin uso correctamente, presione enter para volver"
+        else
+            echo "Se ha producido algun error, revise la consola"
+            read -p "Presione enter para volver"
+        fi
+    else
+        read -p "Operacion cancelada, presione enter para volver"
+    fi
+    clear
+}
+
+chkDiskUsage() {
+    read -p "Introduce la ruta que deseas escanear, si quieres hacerlo sobre todo el sistema (costará más tiempo), escribe /: " directory
+    if [ "$directory" == "" ]; then
+        read -p "No has introducido ninguna ruta. Presiona Enter para continuar."
+    else
+        output_file="/root/$(date +%Y-%m-%d)-disk-scan.txt"
+        extLibrary/tdu.linux.amd64 "$directory" > "$output_file"
+        cat "$output_file"
+        read -p "Escaneo finalizado. Se ha guardado la información en un archivo de texto en $output_file. Presiona Enter para continuar."
+        clear
+    fi
+}
+
+clear
+menu() {
+    echo "MANTENIMIENTO DEL SISTEMA"
+    echo "1) Actualizar Repositorios"
+    echo "2) Actualizar paquetes"
+    echo "3) Eliminar paquetes sin usar"
+    echo "4) Comprobar espacio en disco"
+    echo "5) Volver"
+    read -p "Introduce el número de tu opción: " option
+
+    case $option in
+    1) selected="Actualizar Repositorios" ;;
+    2) selected="Actualizar paquetes" ;;
+    3) selected="Eliminar paquetes sin usar" ;;
+    4) selected="Comprobar espacio en disco" ;;
+    5) selected="Volver" ;;
+    *)
+        echo "Opción no válida"
+        selected=""
+        ;;
+    esac
+}
+
+menu
+
+while [ "$selected" != "Volver" ]; do
+    case $selected in
+    "Actualizar Repositorios") updRepo ;;
+    "Actualizar paquetes") updPaq ;;
+    "Eliminar paquetes sin usar") delUnsPaq ;;
+    "Comprobar espacio en disco") chkDiskUsage ;;
+    "Volver") break ;;
+    esac
+    menu
+done
