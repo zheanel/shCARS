@@ -1,2 +1,69 @@
 #!/bin/bash
 
+#Este script realizara copias de las siguientes carpetas: /var/www/ /etc/nginx /etc/ssh /home
+#FTP Credentials
+serverAddress=
+folderBackup=$(hostname)
+username=
+password=
+port=21
+
+doBackup() {
+    filename=backup-$(date +%Y-%m-%d).tar.gz
+    tar czf "$filename" /home/
+    if [ $? -eq 0 ]; then
+        read -p "¿Desea subir la copia de seguridad al servidor FTP configurado? Y/N  :" question
+        if [ "$question" == "Y" ]; then
+            curl -T "$filename" ftp://$serverAddress --user $username:$password
+            if [ $? -eq 0 ]; then
+                rm $filename
+                read -p "Se ha subido el archivo con exito, presione enter para continuar"
+            fi
+        else
+            echo ""
+        fi
+    else
+        echo ""
+    fi
+    clear
+}
+
+listBackups() {
+        curl ftp://$serverAddress/ --user $username:$password
+}
+
+delBackup() {
+        echo ""
+}
+
+clear
+menu() {
+    echo "MENU PRINCIPAL"
+    echo "Selecciona una opcion:"
+    echo "1) Realizar Copia de seguridad"
+    echo "2) Listar copias de seguridad"
+    echo "3) Eliminar copia de seguridad"
+    echo "4) Salir"
+    read -p "Introduce el número de tu opción: " option
+
+    case $option in
+        1) selected="Realizar Copia de seguridad";;
+        2) selected="Listar copias de seguridad";;
+        3) selected="Eliminar copia de seguridad";;
+        4) selected="Salir";;
+        *) echo "Opción no válida"; selected="";;
+    esac
+}
+
+menu
+
+while [ "$selected" != "Salir" ]
+do
+    case $selected in
+        "Realizar Copia de seguridad") doBackup;;
+        "Listar copias de seguridad") listBackups;;
+        "Eliminar copia de seguridad") delBackup;;
+        "Salir") break;;
+    esac
+    menu
+done
