@@ -1,0 +1,68 @@
+#!/bin/bash
+
+chkSpeed() {
+    read -p "¿Quieres ejecutar el servidor o cliente? SER/CLI:  " servOption
+    if [ "$servOption" == "SER" ]; then
+        iperf3 -s -p 5505
+    elif [ "$servOption" == "CLI" ]; then
+        read -p "Introduce la direccion IP del servidor: " servIP
+        if [ -n "$servIP" ]; then
+            iperf3 -c "$servIP" -p 5505
+        fi
+        read -p "Presione enter para continuar"
+        clear
+    else
+        echo "Operacion cancelada"
+    fi
+}
+
+chkExternal() {
+  testNum=0
+  echo "Comprobando acceso a internet a traves de (1.1.1.1)"
+  ping -c 4 1.1.1.1 &>/dev/null
+  if [ $? -eq 0 ]; then
+    echo "El cliente tiene conectividad a internet"
+    testNum=$((testNum + 1))
+    echo "Comprobando resolucion DNS (cloudflare.com)"
+    ping -c 4 cloudflare.com &>/dev/null
+    if [ $? -eq 0 ]; then
+      echo "El cliente puede resolver correctamente nombres de dominio"
+      testNum=$((testNum + 1))
+    else
+      echo "Error al resolver nombres de dominio, revise los DNS"
+    fi
+  else
+    echo "El cliente no dispone de conectividad a internet, revise la puerta de enlace o cableado"
+  fi
+  read -p "Comprobaciones $testNum/2 realizadas. Presione enter para volver"
+  clear
+}
+
+clear
+menu() {
+    echo "OPCIONES DE RED"
+    echo "Selecciona una opcion:"
+    echo "1) Prueba de velocidad local"
+    echo "2) Comprobar conectividad"
+    echo "3) Salir"
+    read -p "Introduce el número de tu opción: " option
+
+    case $option in
+        1) selected="Prueba de velocidad local";;
+        2) selected="Comprobar conectividad";;
+        3) selected="Salir";;
+        *) echo "Opción no válida"; selected="";;
+    esac
+}
+
+menu
+
+while [ "$selected" != "Salir" ]
+do
+    case $selected in
+        "Prueba de velocidad local") chkSpeed;;
+        "Comprobar conectividad") chkExternal;;
+        "Salir") break;;
+    esac
+    menu
+done

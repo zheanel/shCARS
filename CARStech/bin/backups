@@ -41,7 +41,7 @@ delBackup() {
 
 clear
 menu() {
-    echo "MENU PRINCIPAL"
+    echo "COPIAS DE SEGURIDAD"
     echo "Selecciona una opcion:"
     echo "1) Realizar Copia de seguridad"
     echo "2) Listar copias de seguridad"
