@@ -14,7 +14,7 @@ menu() {
     echo "MENU PRINCIPAL"
     echo "Selecciona una opcion:"
     echo "1) Gestionar Servicios"
-    echo "2) Copias de Seguridad"
+    echo "2) Realizar copia de seguridad"
     echo "3) Mantenimiento Sistema"
     echo "4) Comprobar conectividad"
     echo "5) Salir"
@@ -22,7 +22,7 @@ menu() {
 
     case $option in
         1) selected="Gestionar Servicios";;
-        2) selected="Copias de Seguridad";;
+        2) selected="Realizar copia de seguridad";;
         3) selected="Mantenimiento Sistema";;
         4) selected="Comprobar conectividad";;
         5) selected="Salir";;
@@ -36,7 +36,7 @@ while [ "$selected" != "Salir" ]
 do
     case $selected in
         "Gestionar Servicios") bin/services;;
-        "Copias de Seguridad") bin/backups;;
+        "Realizar copia de seguridad") bin/backups;;
         "Mantenimiento Sistema") bin/os_maintenance;;
         "Comprobar conectividad") bin/net_health;;
     esac

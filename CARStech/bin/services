@@ -1,134 +1,97 @@
 #!/bin/bash
+declare -a serviceList=("nginx" "apache2" "isc-dhcp-server" "bind9" "mariadb-server" "openssh-server" "haproxy")
+serviceExists=false
 
-webServer() {
-    echo "Buscando servidor web..."
-    dpkg -l | grep nginx &>/dev/null
-    if [ $? -eq 0 ]; then
-        echo "Se ha encontrado un servidor NGINX, reiniciando"
-        sudo systemctl restart nginx
-        if [ $? -eq 0 ]; then
-            echo "Servicio reiniciado con exito"
-        else
-            echo "No se ha podido reiniciar, hagalo manualmente para revisar los errores"
-        fi
-        read -p "Presione enter para volver"
-    else
-        dpkg -l | grep apache2 &>/dev/null
-        if [ $? -eq 0 ]; then
-            echo "Se ha encontrado un servidor APACHE, reiniciando"
-            sudo systemctl restart apache2
-            if [ $? -eq 0 ]; then
-                echo "Servicio reiniciado con exito"
+serviceStatus() {
+    echo "Comprobando los servicios..."
+
+    for service in "${serviceList[@]}"; do
+        if systemctl list-unit-files --type=service | grep -q "^$service.service"; then
+            systemctl is-active --quiet "$service"
+            status=$?
+            if [ $status -eq 0 ]; then
+                echo -e "$service --- \033[0;32mEn Ejecuccion\033[0m"
             else
-                echo "No se ha podido reiniciar, hagalo manualmente para revisar los errores"
+                echo -e "$service --- \033[0;31mParado\033[0m"
             fi
-            read -p "Presione enter para volver"
         else
-            read -p "No se ha encontrado un servidor web instalado, presione enter para volver"
+            echo -e "$service --- \033[0;31mNo esta instalado\033[0m"
         fi
+    done
+    clear
+}
+
+chgService() {
+    read -p "¿Que deseas realizar? (R)einiciar, (P)arar, (I)niciar. Escribe la letra entre parentesis: " changeStatus
+    changeStatus=$(echo "$changeStatus" | tr '[:lower:]' '[:upper:]')
+
+    if [[ "$changeStatus" == "R" || "$changeStatus" == "P" || "$changeStatus" == "I" ]]; then
+        echo Servicios disponibles: ${serviceList[@]},
+        read -p "Escribe el nombre del servicio al que deseas aplicar la accion: " selectedService
+
+        for service in "${serviceList[@]}"; do
+            if [[ "$service" == "$selectedService" ]]; then
+                serviceExists=true
+                break
+            fi
+        done
+
+        if $serviceExists; then
+            case "$changeStatus" in
+            "R") action="restart" ;;
+            "P") action="stop" ;;
+            "I") action="start" ;;
+            esac
+
+            systemctl "$action" "$selectedService" &>/dev/null
+            if [ $? -ne 0 ]; then
+                read -p "Fallo al cambiar el estado del servicio, puede que no exista o haya dado error. Presione enter"
+            else
+                read -p "El servicio $selectedService ha cambiado de estado correctamente"
+            fi
+        else
+            echo "El servicio '$selectedService' no existe en la lista."
+        fi
+    else
+        echo "Opción no válida. Debes elegir (R), (P) o (I)."
     fi
     clear
 }
 
-dhcpDNS() {
-        echo "Buscando servidor DHCP..."
-    dpkg -l | grep isc-dhcp-server &>/dev/null
-    if [ $? -eq 0 ]; then
-        echo "Existe un servidor DHCP, intentando reiniciar"
-        sudo systemctl restart isc-dhcp-server
-        if [ $? -eq 0 ]; then
-            echo "Servicio reiniciado con exito"
-        else
-            echo "No se ha podido reiniciar, hagalo manualmente para revisar los errores"
+moreInfoService() {
+    echo Servicios disponibles: ${serviceList[@]},
+    read -p "Escribe el nombre del servicio al que deseas aplicar la accion: " selectedService
+
+   for service in "${serviceList[@]}"; do
+        if [[ "$service" == "$selectedService" ]]; then
+            serviceExists=true
+            break
         fi
-        read -p "Presione enter para volver"
+    done
+
+    if $serviceExists; then
+        systemctl status --no-pager "$selectedService"
+        read -p "Presione Enter para volver..."
     else
-        dpkg -l | grep bind9 &>/dev/null
-        if [ $? -eq 0 ]; then
-            echo "Existe un servidor DNS (bind9), intentando reiniciar"
-            sudo systemctl restart bind9
-            if [ $? -eq 0 ]; then
-                echo "Servicio reiniciado con exito"
-            else
-                echo "No se ha podido reiniciar, hagalo manualmente para revisar los errores"
-            fi
-            read -p "Presione enter para volver"
-        else
-            read -p "No se ha encontrado un servidor DHCP/DNS instalado, presione enter para volver"
-        fi
+        read -p "El servicio '$selectedService' no existe en la lista. Presione Enter para volver..."
     fi
     clear
-}
-
-mariaDB() {
-        dpkg -l | grep mariadb-server &>/dev/null
-        if [ $? -eq 0 ]; then
-            echo "Existe un servidor MariaDB, intentando reiniciar"
-            sudo systemctl restart mariadb-server
-            if [ $? -eq 0 ]; then
-                echo "Servicio reiniciado con exito"
-            else
-                echo "No se ha podido reiniciar, hagalo manualmente para revisar los errores"
-            fi
-            read -p "Presione enter para volver"
-        else
-            read -p "No se ha encontrado un servidor MariaDB instalado, presione enter para volver"
-        fi
-        clear
-}
-
-haProxy() {
-        dpkg -l | grep haproxy &>/dev/null
-        if [ $? -eq 0 ]; then
-            echo "Existe un servidor haProxy, intentando reiniciar"
-            sudo systemctl restart haproxy
-            if [ $? -eq 0 ]; then
-                echo "Servicio reiniciado con exito"
-            else
-                echo "No se ha podido reiniciar, hagalo manualmente para revisar los errores"
-            fi
-            read -p "Presione enter para volver"
-        else
-            read -p "No se ha encontrado un servidor haProxy instalado, presione enter para volver"
-        fi
-        clear
-}
-
-sshServer() {
-        dpkg -l | grep openssh-server &>/dev/null
-        if [ $? -eq 0 ]; then
-            echo "Existe un servidor SSH, intentando reiniciar"
-            sudo systemctl restart sshd
-            if [ $? -eq 0 ]; then
-                echo "Servicio reiniciado con exito"
-            else
-                echo "No se ha podido reiniciar, hagalo manualmente para revisar los errores"
-            fi
-            read -p "Presione enter para volver"
-        else
-            read -p "No se ha encontrado un servidor SSH instalado, presione enter para volver"
-        fi
-        clear
 }
 
 clear
 menu() {
     echo "GESTION DE SERVICIOS"
-    echo "1) Servidor Web"
-    echo "2) Servidor DHCP y DNS"
-    echo "3) MariaDB (Base de datos)"
-    echo "4) HaProxy (Balanceador Carga)"
-    echo "5) Servidor SSH"
-    echo "6) Volver"
+    echo "1) Comprobar servicios"
+    echo "2) Cambiar estado de un servicio"
+    echo "3) Estado avanzado de un servicio"
+    echo "4) Volver"
     read -p "Introduce el número de tu opción: " option
 
     case $option in
-    1) selected="Servidor Web" ;;
-    2) selected="Servidor DHCP y DNS" ;;
-    3) selected="MariaDB (Base de datos)" ;;
-    4) selected="HaProxy (Balanceador Carga)" ;;
-    5) selected="Servidor SSH" ;;
-    6) selected="Volver" ;;
+    1) selected="Comprobar servicios" ;;
+    2) selected="Cambiar estado de un servicio" ;;
+    3) selected="Estado avanzado de un servicio" ;;
+    4) selected="Volver" ;;
     *)
         echo "Opción no válida"
         selected=""
@@ -140,11 +103,9 @@ menu
 
 while [ "$selected" != "Volver" ]; do
     case $selected in
-    "Servidor Web") webServer ;;
-    "Servidor DHCP y DNS") dhcpDNS ;;
-    "MariaDB (Base de datos)") mariaDB ;;
-    "HaProxy (Balanceador Carga)") haProxy ;;
-    "Servidor SSH") sshServer ;;
+    "Servidor Web") serviceStatus ;;
+    "Cambiar estado de un servicio") chgService ;;
+    "Estado avanzado de un servicio") moreInfoService ;;
     "Volver") break ;;
     esac
     menu
