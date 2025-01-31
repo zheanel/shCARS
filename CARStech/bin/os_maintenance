@@ -21,7 +21,6 @@ updPaq() {
         echo "Se ha producido algun error, revise la consola"
         read -p "Presione enter para volver"
     fi
-    read -p "Presione enter para volver"
     clear
 }
 
@@ -38,7 +37,6 @@ delUnsPaq() {
     else
         read -p "Operacion cancelada, presione enter para volver"
     fi
-    read -p "Presione enter para volver"
     clear
 }
 

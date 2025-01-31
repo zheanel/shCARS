@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#Este script realizara copias de las siguientes carpetas: /var/www /etc/nginx /etc/ssh /home /etc/bind /etc/dhcpd
+#Este script realizara copias de las carpetas indicadas
 #FTP Credentials
 serverAddress=
 username=
@@ -17,7 +17,7 @@ log() {
     echo "$(date +'%Y-%m-%d %H:%M:%S') - $1" >> "$logFile"
 }
 
-tar czPf "$filename" /var/www /etc/nginx /etc/ssh /home /etc/bind /etc/dhcpd
+tar czPf "$filename" /var/www /etc/nginx /etc/ssh /home 
 if [ $? -eq 0 ]; then
     log "Archivo $filename creado con exito."
 

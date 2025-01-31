@@ -77,7 +77,6 @@ moreInfoService() {
     else
         read -p "El servicio '$selectedService' no existe en la lista. Presione Enter para volver..."
     fi
-    read -p "Presione enter para volver"
     clear
 }
 

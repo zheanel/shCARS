@@ -9,8 +9,8 @@ echo "
 Build v1.0 - Enero 2025
 "
 
-clear
 menu() {
+    clear
     echo "MENU PRINCIPAL"
     echo "Selecciona una opcion:"
     echo "1) Gestionar Servicios"
@@ -29,7 +29,6 @@ menu() {
         *) echo "Opción no válida"; selected="";;
     esac
 }
-
 menu
 
 while [ "$selected" != "Salir" ]
