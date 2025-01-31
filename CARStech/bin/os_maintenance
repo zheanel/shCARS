@@ -21,6 +21,7 @@ updPaq() {
         echo "Se ha producido algun error, revise la consola"
         read -p "Presione enter para volver"
     fi
+    read -p "Presione enter para volver"
     clear
 }
 
@@ -37,20 +38,8 @@ delUnsPaq() {
     else
         read -p "Operacion cancelada, presione enter para volver"
     fi
+    read -p "Presione enter para volver"
     clear
-}
-
-chkDiskUsage() {
-    read -p "Introduce la ruta que deseas escanear, si quieres hacerlo sobre todo el sistema (costará más tiempo), escribe /: " directory
-    if [ "$directory" == "" ]; then
-        read -p "No has introducido ninguna ruta. Presiona Enter para continuar."
-    else
-        output_file="/root/$(date +%Y-%m-%d)-disk-scan.txt"
-        extLibrary/tdu.linux.amd64 "$directory" > "$output_file"
-        cat "$output_file"
-        read -p "Escaneo finalizado. Se ha guardado la información en un archivo de texto en $output_file. Presiona Enter para continuar."
-        clear
-    fi
 }
 
 clear
@@ -59,16 +48,14 @@ menu() {
     echo "1) Actualizar Repositorios"
     echo "2) Actualizar paquetes"
     echo "3) Eliminar paquetes sin usar"
-    echo "4) Comprobar espacio en disco"
-    echo "5) Volver"
+    echo "4) Volver"
     read -p "Introduce el número de tu opción: " option
 
     case $option in
     1) selected="Actualizar Repositorios" ;;
     2) selected="Actualizar paquetes" ;;
     3) selected="Eliminar paquetes sin usar" ;;
-    4) selected="Comprobar espacio en disco" ;;
-    5) selected="Volver" ;;
+    4) selected="Volver" ;;
     *)
         echo "Opción no válida"
         selected=""
@@ -83,7 +70,6 @@ while [ "$selected" != "Volver" ]; do
     "Actualizar Repositorios") updRepo ;;
     "Actualizar paquetes") updPaq ;;
     "Eliminar paquetes sin usar") delUnsPaq ;;
-    "Comprobar espacio en disco") chkDiskUsage ;;
     "Volver") break ;;
     esac
     menu

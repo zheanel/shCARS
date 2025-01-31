@@ -31,3 +31,4 @@ if [ $? -eq 0 ]; then
 else
     log "Error: Error al crear el archivo de backup."
 fi
+

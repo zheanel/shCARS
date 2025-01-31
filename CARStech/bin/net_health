@@ -14,6 +14,8 @@ chkSpeed() {
     else
         echo "Operacion cancelada"
     fi
+    read -p "Presione enter para volver"
+    clear
 }
 
 chkExternal() {
