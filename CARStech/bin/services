@@ -103,7 +103,7 @@ menu
 
 while [ "$selected" != "Volver" ]; do
     case $selected in
-    "Servidor Web") serviceStatus ;;
+    "Comprobar servicios") serviceStatus ;;
     "Cambiar estado de un servicio") chgService ;;
     "Estado avanzado de un servicio") moreInfoService ;;
     "Volver") break ;;
